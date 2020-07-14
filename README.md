@@ -1,1 +1,2 @@
-A standalone demo of the Linkify utility first developed for my personal website (https://github.com/bmcc0605/website)
+A standalone demo of the Linkify utility first developed for my personal website (https://github.com/bmcc0605/website).
+Demo can be run using the npm dev server, using 'npm start' or 'npx webpack-dev-server --open'.
