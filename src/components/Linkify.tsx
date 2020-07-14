@@ -8,38 +8,23 @@ export interface inLineTextLinkPair
 }
 
 /*
- * Function clickableTextLink takes a text/link pair. If the url starts with a '/' it will be treated as an internal url and the function will return a
- * <link> component that can be routed on the client side. Otherwise, it returns an <a> component with it's href set to the supplied url.
+ * Function Linkify takes a string and an arbitrary number of substring/link pairs, and returns an array of text and link snippets which can be wrapped in a text element
+ * Input
+ *     - text: a string which contains substrings that need to be converted into links.
+ *     - substrings: an arbitrary amount of substring/url pairs to be inserted into the text.
+ * 
+ * Note: removing this code from the website project caused a warning: "Each child in a list should have a unique "key" prop." Issue resolved by mapping each component into a <span>
  */
-function clickableTextLink(link: inLineTextLinkPair): any
+
+export function Linkify(text: string, ...linkWords: inLineTextLinkPair[]): any[]
 {
-    // Return clint-side routed link if given an internal url
-    if (link.url.charAt(0) === "/")
-    {
-        return (
-            <Link to={link.url}>
-                {link.text}
-            </Link>
-        )
-    }
-    // Else return an <a> component when given an external link
-    else
-    {
-        return (
-            <a
-                href={link.url}
-                target="_blank"
-                rel="noopener noreferrer"
-            >
-                {link.text}
-            </a>
-        )
-    }
+    var content = recursiveSplicer(text, ...linkWords);
+    return content.map((item: any, index: number) => <span key = {index}>{item}</span>);
 }
 
 /*
- * Function clickableTextLink identifies a linkWord in the given string and splits the string into the text before the link word, a linkified link word, and the remaining text after the link word.
- * The preceding and trailing substrings are recursed upon to find more key words. The function returns the concatenation of the link with the text on either side.
+ * Function recursiveSplicer identifies a linkWord in the given string and splits the string into the text before the link word, a linkified link word, and the remaining text after the link word.
+ * The preceding and trailing substrings are recursed upon to find more key words. The function returns the link object plus the result of the recursive calls on the leading and trailing substrings.
  */
 function recursiveSplicer(input: string, ...linkWords: inLineTextLinkPair[]): any[]
 {
@@ -80,14 +65,31 @@ function recursiveSplicer(input: string, ...linkWords: inLineTextLinkPair[]): an
 }
 
 /*
- * Function Linkify takes a string and an arbitrary number of substring/link pairs, and an array of text and link snippets which can be wrapped in a text element
- * Input
- *     - text: a string which contains substrings that need to be converted into links.
- *     - substrings: an arbitrary amount of substring/url pairs to be inserted into the text.
+ * Function clickableTextLink takes a text/link pair. If the url starts with a '/' it will be treated as an internal url and the function will return a
+ * <link> component that can be routed on the client side. Otherwise, it returns an <a> component with it's href set to the supplied url.
  */
-
-export function Linkify(text: string, ...linkWords: inLineTextLinkPair[]): any[]
+function clickableTextLink(link: inLineTextLinkPair): any
 {
-    var content = recursiveSplicer(text, ...linkWords);
-    return content.map((item: any, index: number) => <span key = {index}>{item}</span>);
+    // Return clint-side routed link if given an internal url
+    if (link.url.charAt(0) === "/")
+    {
+        return (
+            <Link to={link.url}>
+                {link.text}
+            </Link>
+        )
+    }
+    // Else return an <a> component when given an external link
+    else
+    {
+        return (
+            <a
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                {link.text}
+            </a>
+        )
+    }
 }
