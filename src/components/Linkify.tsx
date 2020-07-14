@@ -11,7 +11,7 @@ export interface inLineTextLinkPair
  * Function clickableTextLink takes a text/link pair. If the url starts with a '/' it will be treated as an internal url and the function will return a
  * <link> component that can be routed on the client side. Otherwise, it returns an <a> component with it's href set to the supplied url.
  */
-function clickableTextLink(link: inLineTextLinkPair)
+function clickableTextLink(link: inLineTextLinkPair): any
 {
     // Return clint-side routed link if given an internal url
     if (link.url.charAt(0) === "/")
@@ -41,7 +41,7 @@ function clickableTextLink(link: inLineTextLinkPair)
  * Function clickableTextLink identifies a linkWord in the given string and splits the string into the text before the link word, a linkified link word, and the remaining text after the link word.
  * The preceding and trailing substrings are recursed upon to find more key words. The function returns the concatenation of the link with the text on either side.
  */
-function recursiveSplicer(input: string, ...linkWords: inLineTextLinkPair[])
+function recursiveSplicer(input: string, ...linkWords: inLineTextLinkPair[]): any[]
 {
     var returnText: any = input;
 
@@ -86,8 +86,8 @@ function recursiveSplicer(input: string, ...linkWords: inLineTextLinkPair[])
  *     - substrings: an arbitrary amount of substring/url pairs to be inserted into the text.
  */
 
-export function Linkify(text: string, ...linkWords: inLineTextLinkPair[])
+export function Linkify(text: string, ...linkWords: inLineTextLinkPair[]): any[]
 {
     var content = recursiveSplicer(text, ...linkWords);
-    return (content);
+    return content.map((item: any, index: number) => <span key = {index}>{item}</span>);
 }
