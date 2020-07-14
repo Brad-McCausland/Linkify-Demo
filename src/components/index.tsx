@@ -1,11 +1,17 @@
 import React from "react";
 import * as ReactDOM from "react-dom";
 
-class App extends React.Component {
+import { Linkify, inLineTextLinkPair } from './Linkify';
+
+class App extends React.Component
+{
     render()
     {
+        let linkPair: inLineTextLinkPair = {text: "here", url: "https://www.google.com"}
         return (
-            <p>huehuehue</p>
+            <h1>
+                {Linkify("Click here to go to google", linkPair)}
+            </h1>
         );
     }
 }
