@@ -16,10 +16,20 @@ export interface inLineTextLinkPair
  * Note: removing this code from the website project caused a warning: "Each child in a list should have a unique "key" prop." Issue resolved by mapping each component into a <span>
  */
 
-export function Linkify(text: string, ...linkWords: inLineTextLinkPair[]): any[]
+export function Linkify(text: string, ...linkWords: inLineTextLinkPair[]): any
 {
     var content = recursiveSplicer(text, ...linkWords);
-    return content.map((item: any, index: number) => <span key = {index}>{item}</span>);
+
+    // if the result of the recursive operation is a string, then it did not find any keywords and the function should spit back the input.
+    if (typeof(content) === "string")
+    {
+        return text;
+    }
+    // Otherwise, the elements in the array should be assigned keys before being returned.
+    else
+    {
+        return content.map((item: any, index: number) => <span key = {index}>{item}</span>);
+    }
 }
 
 /*
@@ -59,8 +69,9 @@ function recursiveSplicer(input: string, ...linkWords: inLineTextLinkPair[]): an
         var secondSubstring = input.slice(substringEnd);
 
         returnText = [recursiveSplicer(firstSubstring, ...linkWords), link, recursiveSplicer(secondSubstring, ...linkWords)];
+        returnText = [].concat.apply([], returnText);
     }
-
+    
     return returnText;
 }
 
