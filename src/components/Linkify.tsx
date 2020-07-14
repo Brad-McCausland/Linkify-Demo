@@ -33,20 +33,20 @@ export function Linkify(text: string, ...linkWords: inLineTextLinkPair[]): any
 }
 
 /*
- * Function recursiveSplicer identifies a linkWord in the given string and splits the string into the text before the link word, a linkified link word, and the remaining text after the link word.
+ * Function recursiveSplicer identifies a linkWord in the given string and splits the string into the text before the link word, the linkified link word, and the remaining text after the link word.
  * The preceding and trailing substrings are recursed upon to find more key words. The function returns the link object plus the result of the recursive calls on the leading and trailing substrings.
  */
-function recursiveSplicer(input: string, ...linkWords: inLineTextLinkPair[]): any[]
+function recursiveSplicer(input: string, ...wordLinkPairs: inLineTextLinkPair[]): any[]
 {
     var returnText: any = input;
 
     var substringStart = -1;
-    var currentLinkWord = null;
+    var currentWordLinkPair = null;
 
-    // Find the first occurance of any link word and set substringStart, currentLinkWord
-    for (currentLinkWord of linkWords)
+    // Find the first occurance of a link word and set substringStart, currentWordLinkPair
+    for (currentWordLinkPair of wordLinkPairs)
     {
-        substringStart = input.toLowerCase().indexOf(currentLinkWord.text.toLowerCase());
+        substringStart = input.toLowerCase().indexOf(currentWordLinkPair.text.toLowerCase());
         if (substringStart > -1)
         {
             // No need to continue if a match is found
@@ -55,20 +55,24 @@ function recursiveSplicer(input: string, ...linkWords: inLineTextLinkPair[]): an
     }
 
     // If linkword found, split input into two substrings on either side of the linkword, recurse on both substrings, then set returnText equal to the combined result
-    if (substringStart > -1 && currentLinkWord !== null)
+    if (substringStart > -1 && currentWordLinkPair !== null)
     {
-        const substringEnd = substringStart + currentLinkWord.text.length;
+        const substringEnd = substringStart + currentWordLinkPair.text.length;
 
         var firstSubstring = input.slice(0, substringStart);
-        // Create new text/url pair with text from input to preserve capitalization
+
+        // Create new text/url pair with original text from input to preserve capitalization
         var link = clickableTextLink(
             {
                 text: input.slice(substringStart, substringEnd),
-                url: currentLinkWord.url
+                url: currentWordLinkPair.url
             });
+
         var secondSubstring = input.slice(substringEnd);
 
-        returnText = [recursiveSplicer(firstSubstring, ...linkWords), link, recursiveSplicer(secondSubstring, ...linkWords)];
+        returnText = [recursiveSplicer(firstSubstring, ...wordLinkPairs), link, recursiveSplicer(secondSubstring, ...wordLinkPairs)];
+
+        // Flatten results for good measure
         returnText = [].concat.apply([], returnText);
     }
     
